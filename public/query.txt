@@ -1,0 +1,4 @@
+SELECT a.id_peserta,a.nama_peserta,a.tanggal_lahir,a.id_paket,b.nama_paket,a.tanggal_masuk,a.id_status,c.keterangan,year(curdate())-year(a.tanggal_lahir) as usia,
+(year(curdate())-year(a.tanggal_lahir))*12 as usia_in_bln,56-(year(curdate())-year(a.tanggal_lahir))as proyeksi,(year(curdate())-year(a.tanggal_masuk))*12 as masa_kepesertaan_in_bln,(year(curdate())-year(a.tanggal_masuk)) as masa_kepesertaan_in_thn,
+(56-(year(curdate())-year(a.tanggal_lahir)))-((year(curdate())-year(a.tanggal_masuk))) as sisa_masa_kepesertaan,e.manfaat,
+a.id_pdam,d.nama_pdam FROM pesertas a,pakets b,status c,pdams d,manfaats e WHERE a.id_paket=b.id_paket and a.id_status=c.id_status and a.id_pdam=d.id_pdam and a.id_paket=e.id_paket and (year(curdate())-year(a.tanggal_masuk))=e.bulan

@@ -1,0 +1,1 @@
+<h2>Anda tidak memiliki akses ke modul ini,silahkan <a href="{{ URL::to('login') }}">login</a></h2>

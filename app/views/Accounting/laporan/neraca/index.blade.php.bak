@@ -1,0 +1,20 @@
+@extends('layouts.accounting')
+@section('navbar')
+@parent
+@stop
+
+@section('content')
+<h2>Neraca</h2>
+
+{{ HTML::ul($errors->all()) }}
+
+{{ Form::open(array('url'=>'neraca')) }}
+<div class="form-group">
+	{{ Form::label('periode','PERIODE') }}
+	{{ Form::text('periode',Input::old('periode'),array('class'=>'form-control','placeholder'=>'DD-MM-YYYY')) }}
+</div>
+
+{{ Form::submit('Preview',array('class'=>'btn btn-primary btn-sm')) }}
+{{ Form::close() }}
+
+@stop

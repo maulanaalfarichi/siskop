@@ -1,0 +1,122 @@
+update tanggal 14-06-2015
+=====================================================
+1. rubah tabel anggota id_pdam jadi id_koperasi
+ALTER TABLE `usp_anggotas` CHANGE `id_pdam` `id_koperasi` INT(4) NOT NULL;
+2. buat view untuk anggota 
+create view v_anggota as SELECT a.*,b.nama_koperasi FROM `usp_anggotas`  a left join usp_koperasis b on a.id_koperasi=b.id
+3. ubah tabel simpanan untuk field id_anggota jadi id_koperasi karena yang punya simpanan adalah koperasi bukan anggotanya.
+ALTER TABLE `usp_simpanans` CHANGE `id_anggota` `id_koperasi` INT(10) NOT NULL;
+4. create view v_simpanan untuk menampilkan data simpanan, buat model
+create view v_simpanan as SELECT a.id,a.tanggal_simpanan,a.id_koperasi,c.nama_koperasi,a.id_jenis,b.jenis_simpanan,format(a.jumlah,2)as jumlah,a.created_at,a.updated_at FROM `usp_simpanans` a left join usp_jenis_simpan b on a.id_jenis=b.id
+left join usp_koperasis c on a.id_koperasi=c.id
+5. 
+
+
+
+
+update tgl 9-06-2015
+===================================================
+1. create view untuk neraca yang fix
+create view v_neraca_fix as SELECT year(d.tanggal)as tahun,month(d.tanggal)as bln,a.id_golongan,b.nama_golongan,(sum(a.saldo_awal_debet)-sum(a.saldo_awal_kredit))+(sum(d.debet)-sum(d.kredit))as saldo   FROM acc_rekenings a left join acc_golongan b on a.id_golongan = b.id 
+left join acc_journal_details c on a.id_rekening = c.id_rekening
+left join acc_journal_headers d on c.no_bukti = d.no_bukti and d.posting=1 
+group by a.id_golongan,b.nama_golongan order by `tahun`,`bln`
+
+2. modifikasi accounting/laporan/neraca/list.blade.php =>masih eror untuk menampiulkan hasilnya
+
+
+update tgl 8-6-2015
+===================================================
+1. update di tabel acc_golongan 
+<< ASET LANCAR >>
+insert into acc_golongan values(11,'Kas & Bank',now(),'000-00-00');
+insert into acc_golongan values(12,'Simpanan Jangka Pendek',now(),'000-00-00');
+insert into acc_golongan values(13,'Piutang Koperasi',now(),'000-00-00');
+insert into acc_golongan values(14,'Piutang Pinjaman Anggota',now(),'000-00-00');
+insert into acc_golongan values(15,'Piutang Pinjaman Non Anggota',now(),'000-00-00');
+insert into acc_golongan values(16,'Piutang Lain lain',now(),'000-00-00');
+insert into acc_golongan values(17,'Penyisian piutang tak tertagih',now(),'000-00-00');
+insert into acc_golongan values(18,'Persediaan Barang',now(),'000-00-00');
+insert into acc_golongan values(19,'Biaya Dibayar dimuka',now(),'000-00-00');
+
+<<ASET TETAP>>
+insert into acc_golongan values(20,'Tanah',now(),'000-00-00');
+insert into acc_golongan values(21,'Bangunan',now(),'000-00-00');
+insert into acc_golongan values(22,'Kendaraan',now(),'000-00-00');
+insert into acc_golongan values(23,'Peralatan kantor dan Asgros',now(),'000-00-00');
+insert into acc_golongan values(24,'Perabotan Kantor',now(),'000-00-00');
+insert into acc_golongan values(25,'Akumulasi penyusutan Aset tetap',now(),'000-00-00');
+insert into acc_golongan values(26,'Aset Lain lain',now(),'000-00-00');
+
+<<KEWEAJIBAN LANCAR>>
+insert into acc_golongan values(27,'Hutang Usaha',now(),'000-00-00');
+insert into acc_golongan values(28,'Pendapatan diterima dimuka',now(),'000-00-00');
+insert into acc_golongan values(29,'Pendapatan ditangguhkan',now(),'000-00-00');
+insert into acc_golongan values(30,'Hutang Supplier',now(),'000-00-00');
+insert into acc_golongan values(31,'Hutang Pajak',now(),'000-00-00');
+insert into acc_golongan values(32,'Hutang Lain lain',now(),'000-00-00');
+
+<<KEWAJIBAN JANGKA PANJANG>>
+insert into acc_golongan values(33,'Hutang bank',now(),'000-00-00');
+insert into acc_golongan values(34,'Hutang Program hari tua',now(),'000-00-00');
+
+<<EKUITAS>>
+insert into acc_golongan values(35,'Simpanan Wajib',now(),'000-00-00');
+insert into acc_golongan values(36,'Simpanan Pokok',now(),'000-00-00');
+insert into acc_golongan values(37,'Modal Sumbangan',now(),'000-00-00');
+insert into acc_golongan values(38,'Saldo Laba (Rugi) bulan lalu',now(),'000-00-00');
+insert into acc_golongan values(39,'Saldo Laba (Rugi) bulan berjalan',now(),'000-00-00');
+
+<<PARFTISIPASI ANGGOTA>>
+insert into acc_golongan values(40,'Partisipasi Bruto Anggota',now(),'000-00-00');
+insert into acc_golongan values(41,'Beban Pokok',now(),'000-00-00');
+
+<<PENDAPATAN DARI NON ANGGOTA>>
+insert into acc_golongan values(42,'Penjualan',now(),'000-00-00');
+insert into acc_golongan values(43,'Harga Pokok',now(),'000-00-00');
+
+<<SHU KOTOR>>
+insert into acc_golongan values(44,'Beban Administrasi Umum',now(),'000-00-00');
+insert into acc_golongan values(45,'Beban pemasaran',now(),'000-00-00');
+insert into acc_golongan values(46,'Beban penyusutan',now(),'000-00-00');
+insert into acc_golongan values(47,'Beban Amortisasi',now(),'000-00-00');
+insert into acc_golongan values(48,'Beban Penyisihan Piutang Tak tertagih',now(),'000-00-00');
+
+insert into acc_golongan values(49,'Pendapatan diluar Usaha',now(),'000-00-00');
+insert into acc_golongan values(50,'Beban diluar usaha',now(),'000-00-00');
+
+update golongan rekening
+=======================================
+
+
+
+
+
+profil perusahaan #tabel acc_profils
+=======================================
+tambahkan field ketua_umum
+tambahkan field manager
+tambahkan size telpon jadi 60
+rubah controller store,update. rubah view index,show, create dan update 
+
+#tabel peserta
+=======================================
+tambahkan field idpeserta_old 
+
+v_rekening
+========================================
+create view v_rekening as SELECT a.id_rekening,a.nama_rekening,a.id_klasifikasi,b.keterangan,a.parent_id,a.normal_balance,
+a.id_golongan,c.nama_golongan,format(a.saldo_awal_debet,2)as saldo_awal_debet,format(a.saldo_awal_kredit,2)as saldo_awal_kredit 
+FROM  acc_rekenings a left join acc_klasifikasis b on a.id_klasifikasi = b.id_klasifikasi left join acc_golongan c on a.id_golongan = c.id    
+ORDER BY id_rekening  
+
+v_journalheader
+===========================================
+create view v_journalheader as SELECT no_bukti,DATE_FORMAT(tanggal,'%d %b %Y')as tanggal,
+keterangan,format(debet,2)as debet, format(kredit,2)as kredit,posting FROM `acc_journal_headers`
+
+v_posting
+===========================================
+modifikasi v_posting jadi seperti ini scriptnya :
+
+select `inkoppamsi`.`acc_journal_headers`.`tanggal` AS `id`,date_format(`inkoppamsi`.`acc_journal_headers`.`tanggal`,'%d %b %Y') AS `tanggal`,format(sum(`inkoppamsi`.`acc_journal_headers`.`debet`),2) AS `debet`,format(sum(`inkoppamsi`.`acc_journal_headers`.`kredit`),2) AS `kredit` from `inkoppamsi`.`acc_journal_headers` where (`inkoppamsi`.`acc_journal_headers`.`posting` = 1) group by `inkoppamsi`.`acc_journal_headers`.`tanggal` order by `inkoppamsi`.`acc_journal_headers`.`tanggal` desc

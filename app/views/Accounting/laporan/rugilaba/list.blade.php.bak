@@ -1,0 +1,61 @@
+@extends('layouts.accounting')
+@section('navbar')
+@parent
+@stop
+
+@section('content')
+<section class="content invoice">
+<!-- title row -->
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 class="page-header">
+            <i class="fa fa-globe"></i> WEB INKOPPAMSI
+            <small class="pull-right">Date: {{ date('d M Y') }}</small>
+            </h2>
+        </div><!-- /.col -->
+    </div>
+    <!-- info row -->
+    <div class="row invoice-info">
+        <div class="col-sm-8 invoice-col">
+            <H2>Rugi Laba</h2><br>
+		</div>		
+        <!-- Table row -->
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID Rekening</th>
+							<th>Nama Rekening</th>
+							<th>Pengeluaran</th>
+							<th>Pendapatan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+					@foreach($data->get() as $key => $value)
+						<tr>
+							<td>{{ $value->id_rekening }}</td>
+							<td>{{ $value->nama_rekening }}</td>
+							<td align="right">{{ number_format($value->pengeluaran,2,'.',',') }}</td>
+							<td align="right">{{ number_format($value->pendapatan,2,'.',',') }}</td>	
+						</tr>
+					@endforeach
+					    <tr>
+							<td colspan="2" align="center"><b>TOTAL TRANSAKSI</b></td>
+							<td align="right"><b>{{ number_format($data->sum('saldo_awal_debet'),2,',','.') }}</b></td>
+							<td align="right"><b>{{ number_format($data->sum('saldo_awal_kredit'),2,',','.') }}</b></td>
+						</tr>
+                    </tbody>
+                </table>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+		
+        <div class="row no-print">
+            <div class="col-xs-12">
+                <button class="btn btn-success" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+                <a class="btn btn-primary" style="margin-right: 5px;" href="{{ URL::to('bukujurnal') }}"><i class="fa fa-undo"></i> Back</a>
+            </div>
+        </div>
+	</div>
+</section><!-- /.content -->
+@stop
