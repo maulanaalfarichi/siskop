@@ -1,1 +1,1 @@
-# siskop
+# siskop - sistem koperasi
